@@ -25,10 +25,12 @@ namespace HealthReminder
         System.Timers.Timer t;
 
         int totalSecond;
+        
         TimeSpan timeleft;
         public String Msg = "Time up!";
 
-        String songPath = "";
+        
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             loadPlayList();
@@ -54,46 +56,12 @@ namespace HealthReminder
                 timeLabel(0, 0, 0);
                 StartButtonChange();
                 t.Stop();
+                SystemSounds.Asterisk.Play();
                 playSong();
                 MessageBox.Show(Msg);
             }
             }
 
-        private void loadPlayList()
-        {
-            String path = Directory.GetCurrentDirectory() + @"\playlist";
-            DirectoryInfo d = new DirectoryInfo(path);
-            FileInfo[] Files = d.GetFiles("*.wav");
-            List<Song> songs = new List<Song>();
-
-            int num = 0;
-            foreach (FileInfo file in Files)
-            {
-                songs.Add(new Song { name = file.Name, path = file.FullName });
-                //Trace.WriteLine(file.FullName);
-            }
-            var bindingSource1 = new BindingSource();
-            bindingSource1.DataSource = songs;
-
-            comboBox1.DataSource = bindingSource1.DataSource;
-
-            comboBox1.DisplayMember = "name";
-            comboBox1.ValueMember = "path";
-        }
-
-        private void playSong()
-        {
-            SystemSounds.Asterisk.Play();
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(songPath);
-            player.Play();
-        }
-
-        private void pauseSong()
-        {
-            SystemSounds.Asterisk.Play();
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(songPath);
-            player.Play();
-        }
 
 
         private void timeLabel(int h,int m,int s)
@@ -149,7 +117,6 @@ namespace HealthReminder
             m = (int)numMinute.Value;
             s = (int)numSecond.Value;
             setTime(h, m, s);
-            TimeLabel.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", h, m, s);
         }
 
         private void btnExe_Click(object sender, EventArgs e)
@@ -166,7 +133,9 @@ namespace HealthReminder
         public void setTime(int h, int m, int s)
         {
             totalSecond = h * 3600 + m * 60 + s;
-            Trace.WriteLine("total second: " + totalSecond);
+            t.Start();
+            TimeLabel.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", h, m, s);
+            t.Stop();
         }
 
 
@@ -175,9 +144,71 @@ namespace HealthReminder
             Msg = textBox1.Text;
         }
 
+        //Play Song:
+        List<Song> songs = new List<Song>();
+        String songPath = "";
+        int songIndex = -1;
+
+        private void loadPlayList()
+        {
+            String path = Directory.GetCurrentDirectory() + @"\playlist";
+            DirectoryInfo d = new DirectoryInfo(path);
+            FileInfo[] Files = d.GetFiles("*.wav");
+
+
+            int num = 0;
+            foreach (FileInfo file in Files)
+            {
+                songs.Add(new Song { name = file.Name, path = file.FullName });
+                //Trace.WriteLine(file.FullName);
+            }
+            var bindingSource1 = new BindingSource();
+            bindingSource1.DataSource = songs;
+
+            comboBox1.DataSource = bindingSource1.DataSource;
+
+            comboBox1.DisplayMember = "name";
+            comboBox1.ValueMember = "path";
+        }
+
+        System.Media.SoundPlayer player;
+
+        private void playSong()
+        {
+            player = new System.Media.SoundPlayer(songPath);
+            player.Play();
+            if (songIndex<0)
+            {
+                songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] Default Song"));
+            }
+            else {
+                songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] " + songs.ElementAt(songIndex).name));
+            }
+            
+            
+        }
+
+        private void pauseSong()
+        {
+            player.Stop();
+        }
+
         private void btnSongChoose_Click(object sender, EventArgs e)
         {
             songPath = comboBox1.SelectedValue.ToString();
+            songIndex = comboBox1.SelectedIndex;
+            songPlayingLabel.Text = "[Pending] "+songs.ElementAt(songIndex).name;
+        }
+
+        private void btnStopSong_Click(object sender, EventArgs e)
+        {
+            player.Stop();
+            songPlayingLabel.Text = "[No Song]";
+        }
+
+        private void btnPlaySong_Click(object sender, EventArgs e)
+        {
+            playSong();
         }
     }
 }
