@@ -34,3 +34,4 @@ D:\My Projects\HealthReminder\Remainder\HealthReminder\obj\Debug\net5.0-windows\
 D:\My Projects\HealthReminder\Remainder\HealthReminder\obj\Debug\net5.0-windows\ref\HealthReminder.dll
 D:\My Projects\HealthReminder\Remainder\HealthReminder\obj\Debug\net5.0-windows\HealthReminder.pdb
 D:\My Projects\HealthReminder\Remainder\HealthReminder\obj\Debug\net5.0-windows\HealthReminder.genruntimeconfig.cache
+D:\My Projects\HealthReminder\Remainder\HealthReminder\obj\Debug\net5.0-windows\HealthReminder.Properties.Resources.resources

@@ -25,30 +25,32 @@ namespace HealthReminder
         System.Timers.Timer t;
 
         int totalSecond;
-        
+        int loopSecond;
+        int tempSecond;
+
         TimeSpan timeleft;
         public String Msg = "Time up!";
+        public String LoopMsg = "Stand up!";
 
-        
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             loadPlayList();
-            songPath = @"playlist\Nếu.wav";
+            //songPath = @"playlist\Nếu.wav";
             t = new System.Timers.Timer();
             t.Interval = 1000;
             t.Elapsed += OnTimeEvent;
-            
+
         }
 
         private void OnTimeEvent(object sender, ElapsedEventArgs e)
         {
-            Trace.WriteLine("total second: " + totalSecond);
+            Trace.WriteLine("total: "+ totalSecond+" loop: "+loopSecond+" temp: "+tempSecond);
             if (totalSecond > 0)
             {
                 totalSecond--;
+                tempSecond++;
                 timeleft = TimeSpan.FromSeconds(totalSecond);
-                Trace.WriteLine("total second: " + totalSecond);
                 timeLabel(timeleft.Hours, timeleft.Minutes, timeleft.Seconds);
             }
             else
@@ -60,15 +62,27 @@ namespace HealthReminder
                 playSong();
                 MessageBox.Show(Msg);
             }
+            if (loopSecond != 0 && tempSecond == loopSecond)
+            {
+                tempSecond = 0;
+                StartButtonChange();
+                SystemSounds.Asterisk.Play();
+                playSong();
+                MessageBox.Show(LoopMsg);
             }
-
-
-
-        private void timeLabel(int h,int m,int s)
-        {
-            TimeLabel.Invoke((MethodInvoker)(() => TimeLabel.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", h,m,s)));
         }
-        
+
+
+
+        private void timeLabel(int h, int m, int s)
+        {
+            TimeLabel.Invoke((MethodInvoker)(() => TimeLabel.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", h, m, s)));
+            if ((h + m + s) == 0)
+            {
+                TimeLabel.Invoke((MethodInvoker)(() => TimeLabel.ForeColor = Color.DarkRed));
+            }
+        }
+
         private void StartButtonChange()
         {
             btnStart.Invoke((MethodInvoker)(() => btnStart.BackColor = Color.ForestGreen));
@@ -98,7 +112,7 @@ namespace HealthReminder
 
         private void btnStudy_Click(object sender, EventArgs e)
         {
-            setTime(1, 0, 0);
+            setTime(0, 30, 0);
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -112,16 +126,24 @@ namespace HealthReminder
 
         private void btnSet_Click(object sender, EventArgs e)
         {
-            int h = 0, m = 0, s = 0;
-            h = (int)numHour.Value;
-            m = (int)numMinute.Value;
-            s = (int)numSecond.Value;
-            setTime(h, m, s);
+            int h = (int)numHour.Value;
+            int m = (int)numMinute.Value;
+            int s = (int)numSecond.Value;
+            int loop = (int)numLoop.Value;
+            if(loop == 0)
+            {
+                setTime(h, m, s);
+            }
+            else
+            {
+                setTime(h, m, s,loop);
+            }
+            
         }
 
         private void btnExe_Click(object sender, EventArgs e)
         {
-            setTime(0, 30, 0);
+            setTime(0, 1, 0, 20);
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -138,11 +160,28 @@ namespace HealthReminder
             t.Stop();
         }
 
+        public void setTime(int h, int m, int s, int loop)
+        {
+            loopSecond = h * 3600 + m * 60 + s;
+            totalSecond = loopSecond * loop;
+            t.Start();
+        }
+
+
+        private void btnRemind_Click(object sender, EventArgs e)
+        {
+            setTime(0, 30, 0, 4);
+            Msg = "Stand up and take a walk do something else!";
+            LoopMsg = "Stand up and look for 20 seconds at something at least 20 feet away(or 6 meter)";
+        }
+
 
         private void btnSaveMsg_Click(object sender, EventArgs e)
         {
             Msg = textBox1.Text;
         }
+
+
 
         //Play Song:
         List<Song> songs = new List<Song>();
@@ -156,10 +195,11 @@ namespace HealthReminder
             FileInfo[] Files = d.GetFiles("*.wav");
 
 
-            int num = 0;
+            songs.Add(new Song { name = "No Song", path = "" });
             foreach (FileInfo file in Files)
             {
                 songs.Add(new Song { name = file.Name, path = file.FullName });
+
                 //Trace.WriteLine(file.FullName);
             }
             var bindingSource1 = new BindingSource();
@@ -175,17 +215,19 @@ namespace HealthReminder
 
         private void playSong()
         {
-            player = new System.Media.SoundPlayer(songPath);
-            player.Play();
-            if (songIndex<0)
+            if (!songPath.Equals(""))
             {
-                songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] Default Song"));
+                player = new System.Media.SoundPlayer(songPath);
+                player.Play();
+                if (songIndex < 0)
+                {
+                    songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] Default Song"));
+                }
+                else
+                {
+                    songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] " + songs.ElementAt(songIndex).name));
+                }
             }
-            else {
-                songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] " + songs.ElementAt(songIndex).name));
-            }
-            
-            
         }
 
         private void pauseSong()
@@ -197,7 +239,14 @@ namespace HealthReminder
         {
             songPath = comboBox1.SelectedValue.ToString();
             songIndex = comboBox1.SelectedIndex;
-            songPlayingLabel.Text = "[Pending] "+songs.ElementAt(songIndex).name;
+            if (songIndex != 0)
+            {
+                songPlayingLabel.Text = "[Pending] " + songs.ElementAt(songIndex).name;
+            }
+            else
+            {
+                songPlayingLabel.Text = "[No Song]";
+            }
         }
 
         private void btnStopSong_Click(object sender, EventArgs e)
@@ -210,5 +259,6 @@ namespace HealthReminder
         {
             playSong();
         }
+
     }
 }
