@@ -6,4 +6,4 @@
 
 ![UI](readme-asset/UI.PNG)
 
-![UI2](readme-asset/UI2.PNG)
+![UI2](readme-asset/image.png)
