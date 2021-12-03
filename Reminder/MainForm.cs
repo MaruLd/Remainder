@@ -32,7 +32,7 @@ namespace Reminder
         TimeSpan timeleft;
         public String Msg = "Time up!";
         public String LoopMsg = "Stand up!";
-
+        public Boolean isCountdown = false;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -41,42 +41,9 @@ namespace Reminder
             t = new System.Timers.Timer();
             t.Interval = 1000;
             t.Elapsed += OnTimeEvent;
-
         }
 
-        private void OnTimeEvent(object sender, ElapsedEventArgs e)
-        {
-
-            Trace.WriteLine("total: " + totalSecond + " loop: " + loopSecond + " temp: " + tempSecond);
-            if (totalSecond > 0)
-            {
-                totalSecond--;
-                tempSecond++;
-                timeleft = TimeSpan.FromSeconds(totalSecond);
-                timeLabel(timeleft.Hours, timeleft.Minutes, timeleft.Seconds);
-            }
-            else if(totalSecond==0)
-            {
-                timeLabel(0, 0, 0);
-                StartButtonChange();
-                t.Stop();
-                SystemSounds.Asterisk.Play();
-                playSong();
-                MessageBox.Show(Msg);
-            }
-            if (loopSecond != 0 && tempSecond == loopSecond)
-            {
-                tempSecond = 0;
-                SystemSounds.Asterisk.Play();
-                playSong();
-                MessageBox.Show(LoopMsg);
-            }
-            if (isPlaying == true)
-            {
-                t.Start();
-                playSong();
-            }
-        }
+        
 
 
 
@@ -103,7 +70,7 @@ namespace Reminder
             btnStart.Text = "Start";
             btnStart.Click -= btnPause_Click;
             btnStart.Click += new EventHandler(btnStart_Click);
-            t.Stop();
+            isCountdown = false;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -123,11 +90,11 @@ namespace Reminder
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            t.Start();
             btnStart.BackColor = Color.YellowGreen;
             btnStart.Text = "Pause";
             btnStart.Click -= btnStart_Click;
             btnStart.Click += new EventHandler(btnPause_Click);
+            isCountdown = true;
         }
 
         private void btnSet_Click(object sender, EventArgs e)
@@ -163,14 +130,14 @@ namespace Reminder
             totalSecond = h * 3600 + m * 60 + s;
             t.Start();
             TimeLabel.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", h, m, s);
-            t.Stop();
+            isCountdown = true;
         }
 
         public void setTime(int h, int m, int s, int loop)
         {
             loopSecond = h * 3600 + m * 60 + s;
             totalSecond = loopSecond * loop;
-            t.Start();
+            isCountdown = true;
         }
 
 
@@ -193,7 +160,8 @@ namespace Reminder
 
         IWavePlayer player = new WaveOut();
         static List<Song> songs = new List<Song>();
-        String songPath = "";
+        LinkedList<Song> songPath = new LinkedList<Song>();
+        
         int songIndex = -1;
         int playingSongIndex = -1;
 
@@ -206,7 +174,6 @@ namespace Reminder
             String path = Directory.GetCurrentDirectory() + @"\playlist";
             DirectoryInfo d = new DirectoryInfo(path);
             FileInfo[] Files = d.GetFiles("*.wav");
-
 
             songs.Add(new Song { name = "No Song", path = "" });
             foreach (FileInfo file in Files)
@@ -231,27 +198,19 @@ namespace Reminder
 
         private void playSong()
         {
-            Trace.WriteLine("PlaySong() invoked--"+"Song Path: "+ songPath+" Song ");
-            if (!songPath.Equals(""))
+            Trace.WriteLine("PlaySong() invoked--" + "Path: " + songPath.First + " List: "+ songPath.Count);
+            if (songPath.Count>0)
             {
-                AudioFileReader audioFileReader = new AudioFileReader(songPath);
-                Trace.WriteLine("Position: "+ audioFileReader.Position+" Length: "+ audioFileReader.Length);
-                if (!isPlaying&&!songInited)
+                AudioFileReader audioFileReader = new AudioFileReader(songPath.First.Value.path);
+                Trace.WriteLine("con de " + player.PlaybackState);
+                if (!songInited)
                 {
-                        
-                        player.Init(audioFileReader);
-                        songInited = true;
-                    playingSongIndex = songIndex;
+                    player.Init(audioFileReader);
+                    player.Volume = (float)0.05;
+                    songInited = true;
+
                     play();
-                }
-                else if (isPlaying)
-                {
-                     if (isPlaying && audioFileReader.Position == audioFileReader.Length)
-                    {
-                        player.Stop();
-                        songInited = false;
-                        Trace.WriteLine("Song stopped run out of length");
-                    }
+                    
                 }
                 else
                 {
@@ -270,8 +229,8 @@ namespace Reminder
         {
             player.Play();
             isPlaying = true;
-            songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] " + songs.ElementAt(songIndex).name));
-           
+            songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Playing] " + songPath.First.Value.name));
+
         }
 
 
@@ -293,7 +252,7 @@ namespace Reminder
 
             player.Pause();
             isPlaying = false;
-            songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Pause]"+ songs.ElementAt(playingSongIndex).name));
+            songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Pause]" + songPath.First.Value.name));
             btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.BackColor = Color.ForestGreen));
             btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Text = "Start"));
             btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Click -= btnPauseSong_Click));
@@ -303,22 +262,90 @@ namespace Reminder
 
         private void btnPlaySong_Click(object sender, EventArgs e)
         {
+            t.Start();
             playSong();
         }
 
         private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
         {
             songIndex = comboBox1.SelectedIndex;
-            songPath = songs.ElementAt(songIndex).path;
 
-            if (songIndex != 0)
-            {
-                songPlayingLabel.Text = "[Pending] " + songs.ElementAt(songIndex).name;
-            }
-            else
+            if (songIndex == 0)
             {
                 songPlayingLabel.Text = "[No Song]";
             }
+            else if (songPath.Count > 0)
+            {
+                songPath.AddLast(songs.ElementAt(songIndex));
+                songPlayingLabel.Text = "[Pending] " + songs.ElementAt(songIndex).name;
+            }
+            else
+                {
+                    songPath.AddFirst(songs.ElementAt(songIndex));
+                    songPlayingLabel.Text = "[Pause] " + songs.ElementAt(songIndex).name;
+                }
+            Trace.WriteLine("Combox Commited song: " + songs.ElementAt(songIndex).name+" Songpath count: "+songPath.Count+" songindex"+songIndex);
+        }
+
+        private void OnTimeEvent(object sender, ElapsedEventArgs e)
+        {
+            Trace.WriteLine("Playbackstate " + player.PlaybackState);
+            Trace.WriteLine("total: " + totalSecond + " loop: " + loopSecond + " temp: " + tempSecond);
+            if (isCountdown)
+            {
+                if (totalSecond > 0)
+                {
+                    totalSecond--;
+                    tempSecond++;
+                    timeleft = TimeSpan.FromSeconds(totalSecond);
+                    timeLabel(timeleft.Hours, timeleft.Minutes, timeleft.Seconds);
+                }
+                else if (totalSecond == 0)
+                {
+                    totalSecond--;
+                    timeLabel(0, 0, 0);
+                    StartButtonChange();
+                    t.Stop();
+                    SystemSounds.Asterisk.Play();
+                    MessageBox.Show(Msg);
+                    if (songPath.Count > 0)
+                    {
+                        playSong();
+                    }
+                    isCountdown = false;
+                    Trace.WriteLine("T stop here");
+                }
+                if (loopSecond != 0 && tempSecond == loopSecond)
+                {
+                    tempSecond = 0;
+                    SystemSounds.Asterisk.Play();
+                    playSong();
+                    MessageBox.Show(LoopMsg);
+                }
+            }
+
+            // Audio player:
+
+            if (songPath.Count > 0)
+            {
+                playSong();
+            }
+            if (player.PlaybackState.ToString().Equals("Stopped") && isPlaying)
+            {
+                songPath.RemoveFirst();
+                if (songPath.Count == 0)
+                {
+                    player.Stop();
+                }
+                songInited = false;
+                Trace.WriteLine("Song stopped run out of length");
+            }
+            if(songPath.Count == 0 && !isCountdown)
+            {
+                t.Stop();
+            }
+
+            Trace.WriteLine(songPath.ToString());
         }
     }
 
