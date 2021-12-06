@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,7 @@ namespace Reminder
         }
 
         System.Timers.Timer t;
+        System.Timers.Timer m;
 
         int totalSecond;
         int loopSecond;
@@ -41,10 +43,10 @@ namespace Reminder
             t = new System.Timers.Timer();
             t.Interval = 1000;
             t.Elapsed += OnTimeEvent;
+            m = new System.Timers.Timer();
+            t.Interval = 1000;
+            t.Elapsed += OnTimeEvent;
         }
-
-        
-
 
 
         private void timeLabel(int h, int m, int s)
@@ -71,6 +73,7 @@ namespace Reminder
             btnStart.Click -= btnPause_Click;
             btnStart.Click += new EventHandler(btnStart_Click);
             isCountdown = false;
+            t.Stop();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -128,9 +131,9 @@ namespace Reminder
         public void setTime(int h, int m, int s)
         {
             totalSecond = h * 3600 + m * 60 + s;
-            t.Start();
             TimeLabel.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", h, m, s);
             isCountdown = true;
+            t.Start();
         }
 
         public void setTime(int h, int m, int s, int loop)
@@ -138,6 +141,7 @@ namespace Reminder
             loopSecond = h * 3600 + m * 60 + s;
             totalSecond = loopSecond * loop;
             isCountdown = true;
+            t.Start();
         }
 
 
@@ -160,10 +164,9 @@ namespace Reminder
 
         IWavePlayer player = new WaveOut();
         static List<Song> songs = new List<Song>();
-        LinkedList<Song> songPath = new LinkedList<Song>();
+        static LinkedList<Song> songPath = new LinkedList<Song>();
         
         int songIndex = -1;
-        int playingSongIndex = -1;
 
         Boolean songInited = false;
         Boolean isPlaying = false;
@@ -195,34 +198,39 @@ namespace Reminder
 
 
 
-
+        AudioFileReader progressBarAudio;
         private void playSong()
         {
+            
             Trace.WriteLine("PlaySong() invoked--" + "Path: " + songPath.First + " List: "+ songPath.Count);
             if (songPath.Count>0)
             {
-                AudioFileReader audioFileReader = new AudioFileReader(songPath.First.Value.path);
+
+               
                 Trace.WriteLine("con de " + player.PlaybackState);
                 if (!songInited)
                 {
-                    player.Init(audioFileReader);
-                    player.Volume = (float)0.05;
-                    songInited = true;
-
-                    play();
+                    AudioFileReader audioFileReader = new AudioFileReader(songPath.First.Value.path);
+                    progressBarAudio = audioFileReader;
+                    progressBar1.Maximum = (int)progressBarAudio.TotalTime.TotalSeconds;
+                    Trace.WriteLine("Audio length: " + (int)progressBarAudio.Length);
                     
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Step = 1));
+                    player.Init(audioFileReader);
+                    player.Volume = (float)0.1;
+                    songInited = true;
+                    play();
+                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.RemoveAt(0)));
                 }
                 else
                 {
                     play();
+                    
                 }
-
-
                 btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.BackColor = Color.YellowGreen));
                 btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Text = "Pause"));
-                btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Click -= btnPlaySong_Click));
-                btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Click += new EventHandler(btnPauseSong_Click)));
             }
+            
         }
 
         private void play()
@@ -233,62 +241,60 @@ namespace Reminder
 
         }
 
-
-        private void btnSongSet_Click(object sender, EventArgs e)
+        int num = 1;
+        private void SetPlayList()
         {
-
+            
+            if (songPath.Count>0)
+            {
+                listBox1.Items.Add((num++) + "- " + songPath.Last.Value.name);
+                listBox1.DisplayMember = "name";
+                listBox1.SelectedIndex = 0;
+            }
         }
 
         private void btnStopSong_Click(object sender, EventArgs e)
         {
+            btnPlaySong.BackColor = Color.ForestGreen;
+            btnPlaySong.Text = "Play";
+            songPlayingLabel.Text = "[No Song]";
+            songPath.RemoveFirst();
             player.Stop();
             songInited = false;
             isPlaying = false;
-            songPlayingLabel.Text = "[No Song]";
         }
 
-        private void btnPauseSong_Click(object sender, EventArgs e)
-        {
-
-            player.Pause();
-            isPlaying = false;
-            songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Pause]" + songPath.First.Value.name));
-            btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.BackColor = Color.ForestGreen));
-            btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Text = "Start"));
-            btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Click -= btnPauseSong_Click));
-            btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Click += new EventHandler(btnPlaySong_Click)));
-
-        }
+       
 
         private void btnPlaySong_Click(object sender, EventArgs e)
         {
-            t.Start();
-            playSong();
-        }
-
-        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            songIndex = comboBox1.SelectedIndex;
-
-            if (songIndex == 0)
+            if (songPath.Count!=0)
             {
-                songPlayingLabel.Text = "[No Song]";
-            }
-            else if (songPath.Count > 0)
-            {
-                songPath.AddLast(songs.ElementAt(songIndex));
-                songPlayingLabel.Text = "[Pending] " + songs.ElementAt(songIndex).name;
-            }
-            else
+                if (btnPlaySong.Text.Equals("Play"))
                 {
-                    songPath.AddFirst(songs.ElementAt(songIndex));
-                    songPlayingLabel.Text = "[Pause] " + songs.ElementAt(songIndex).name;
+                    t.Start();
+                    playSong();
+                    Trace.WriteLine("Play!!");
                 }
-            Trace.WriteLine("Combox Commited song: " + songs.ElementAt(songIndex).name+" Songpath count: "+songPath.Count+" songindex"+songIndex);
+                else
+                {
+                    player.Pause();
+                    isPlaying = false;
+                    songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[Pause]" + songPath.First.Value.name));
+                    btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.BackColor = Color.ForestGreen));
+                    btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Text = "Play"));
+                    Trace.WriteLine("Pause!!");
+                }
+            }
+            
         }
 
+
+
+        TimeSpan progressBar;
         private void OnTimeEvent(object sender, ElapsedEventArgs e)
         {
+            
             Trace.WriteLine("Playbackstate " + player.PlaybackState);
             Trace.WriteLine("total: " + totalSecond + " loop: " + loopSecond + " temp: " + tempSecond);
             if (isCountdown)
@@ -326,26 +332,79 @@ namespace Reminder
 
             // Audio player:
 
-            if (songPath.Count > 0)
+            if (songPath.Count > 0 && isPlaying)
             {
                 playSong();
+               
             }
             if (player.PlaybackState.ToString().Equals("Stopped") && isPlaying)
             {
-                songPath.RemoveFirst();
-                if (songPath.Count == 0)
+                
+                if (songPath.Count == 1)
                 {
                     player.Stop();
+                    btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.BackColor = Color.ForestGreen));
+                    btnPlaySong.Invoke((MethodInvoker)(() => btnPlaySong.Text = "Start"));
+                    songPlayingLabel.Invoke((MethodInvoker)(() => songPlayingLabel.Text = "[No Song]"));
                 }
-                songInited = false;
+                else
+                {
+                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.RemoveAt(0)));
+                    songPath.RemoveFirst();
+                    songInited = false;
+                }
                 Trace.WriteLine("Song stopped run out of length");
             }
-            if(songPath.Count == 0 && !isCountdown)
+            if(player.PlaybackState.ToString().Equals("Playing") && isPlaying)
+            {
+                progressBar = progressBarAudio.CurrentTime;
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = (int)progressBar.TotalSeconds));
+            }
+            if(!isCountdown && !isPlaying)
             {
                 t.Stop();
             }
 
-            Trace.WriteLine(songPath.ToString());
+        }
+
+        private void btnSongChoose_Click(object sender, EventArgs e)
+        {
+            songIndex = comboBox1.SelectedIndex;
+
+            if (songIndex == 0)
+            {
+                songPlayingLabel.Text = "[No Song]";
+            }
+            else if (songPath.Count > 0)
+            {
+                songPath.AddLast(songs.ElementAt(songIndex));
+                songPlayingLabel.Text = "[Pending] " + songs.ElementAt(songIndex).name;
+            }
+            else
+            {
+                songPath.AddFirst(songs.ElementAt(songIndex));
+                songPlayingLabel.Text = "[Pause] " + songs.ElementAt(songIndex).name;
+            }
+            SetPlayList();
+            Trace.WriteLine("Combox Commited song: " + songs.ElementAt(songIndex).name + " Songpath count: " + songPath.Count + " songindex" + songIndex);
+
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (songPath.Count>0 && listBox1.SelectedIndex>-1) {
+                songPath.Remove(songPath.ElementAt(listBox1.SelectedIndex));
+                listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+            }
+            if (listBox1.Items.Count==0)
+            {
+                num = 1;
+            }
+            else
+            {
+                listBox1.SelectedIndex = 0;
+            }
+            Trace.WriteLine("Songpath count: " + songPath.Count);
         }
     }
 

@@ -38,16 +38,13 @@ namespace Reminder
             this.numMinute = new System.Windows.Forms.NumericUpDown();
             this.numHour = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnStudy = new System.Windows.Forms.Button();
-            this.btnRelax = new System.Windows.Forms.Button();
-            this.btnExe = new System.Windows.Forms.Button();
             this.btnSaveMsg = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSet = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.btnSongChoose = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.songPlayingLabel = new System.Windows.Forms.Label();
             this.btnPlaySong = new System.Windows.Forms.Button();
             this.btnStopSong = new System.Windows.Forms.Button();
@@ -60,6 +57,9 @@ namespace Reminder
             this.relaxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.studyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.excerciseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.btnRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numSecond)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMinute)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHour)).BeginInit();
@@ -75,7 +75,7 @@ namespace Reminder
             this.btnStart.ForeColor = System.Drawing.Color.Black;
             this.btnStart.Location = new System.Drawing.Point(7, 168);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(117, 24);
+            this.btnStart.Size = new System.Drawing.Size(55, 24);
             this.btnStart.TabIndex = 0;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = false;
@@ -83,7 +83,7 @@ namespace Reminder
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(7, 313);
+            this.textBox1.Location = new System.Drawing.Point(8, 218);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(184, 53);
@@ -168,44 +168,10 @@ namespace Reminder
             this.label3.TabIndex = 9;
             this.label3.Text = "Hour";
             // 
-            // btnStudy
-            // 
-            this.btnStudy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnStudy.Location = new System.Drawing.Point(70, 265);
-            this.btnStudy.Name = "btnStudy";
-            this.btnStudy.Size = new System.Drawing.Size(55, 24);
-            this.btnStudy.TabIndex = 10;
-            this.btnStudy.Text = "Study";
-            this.btnStudy.UseVisualStyleBackColor = true;
-            this.btnStudy.Click += new System.EventHandler(this.btnStudy_Click);
-            // 
-            // btnRelax
-            // 
-            this.btnRelax.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnRelax.Location = new System.Drawing.Point(7, 265);
-            this.btnRelax.Name = "btnRelax";
-            this.btnRelax.Size = new System.Drawing.Size(55, 24);
-            this.btnRelax.TabIndex = 11;
-            this.btnRelax.Text = "Relax";
-            this.btnRelax.UseVisualStyleBackColor = true;
-            this.btnRelax.Click += new System.EventHandler(this.btnRelax_Click);
-            // 
-            // btnExe
-            // 
-            this.btnExe.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExe.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.btnExe.Location = new System.Drawing.Point(134, 265);
-            this.btnExe.Name = "btnExe";
-            this.btnExe.Size = new System.Drawing.Size(55, 24);
-            this.btnExe.TabIndex = 12;
-            this.btnExe.Text = "Excercise";
-            this.btnExe.UseVisualStyleBackColor = true;
-            this.btnExe.Click += new System.EventHandler(this.btnExe_Click);
-            // 
             // btnSaveMsg
             // 
             this.btnSaveMsg.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSaveMsg.Location = new System.Drawing.Point(197, 341);
+            this.btnSaveMsg.Location = new System.Drawing.Point(198, 246);
             this.btnSaveMsg.Name = "btnSaveMsg";
             this.btnSaveMsg.Size = new System.Drawing.Size(57, 24);
             this.btnSaveMsg.TabIndex = 13;
@@ -217,7 +183,7 @@ namespace Reminder
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.label4.Location = new System.Drawing.Point(7, 296);
+            this.label4.Location = new System.Drawing.Point(8, 201);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(64, 17);
             this.label4.TabIndex = 14;
@@ -226,7 +192,7 @@ namespace Reminder
             // btnClear
             // 
             this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnClear.Location = new System.Drawing.Point(197, 313);
+            this.btnClear.Location = new System.Drawing.Point(198, 218);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(57, 24);
             this.btnClear.TabIndex = 17;
@@ -238,7 +204,7 @@ namespace Reminder
             // 
             this.btnSet.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.btnSet.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSet.Location = new System.Drawing.Point(197, 168);
+            this.btnSet.Location = new System.Drawing.Point(134, 168);
             this.btnSet.Name = "btnSet";
             this.btnSet.Size = new System.Drawing.Size(55, 24);
             this.btnSet.TabIndex = 18;
@@ -251,7 +217,7 @@ namespace Reminder
             this.btnStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnStop.Font = new System.Drawing.Font("UD Digi Kyokasho NK-B", 9.75F, System.Drawing.FontStyle.Bold);
-            this.btnStop.Location = new System.Drawing.Point(134, 168);
+            this.btnStop.Location = new System.Drawing.Point(69, 168);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(55, 24);
             this.btnStop.TabIndex = 15;
@@ -262,24 +228,22 @@ namespace Reminder
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 203);
+            this.comboBox1.Location = new System.Drawing.Point(8, 355);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(247, 21);
-            this.comboBox1.TabIndex = 19;
-            this.comboBox1.SelectionChangeCommitted += new System.EventHandler(this.comboBox1_SelectionChangeCommitted);
+            this.comboBox1.Size = new System.Drawing.Size(248, 21);
+            this.comboBox1.TabIndex = 19; 
+            // btnAdd
             // 
-            // btnSongChoose
-            // 
-            this.btnSongChoose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnSongChoose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSongChoose.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.btnSongChoose.Location = new System.Drawing.Point(134, 231);
-            this.btnSongChoose.Name = "btnSongChoose";
-            this.btnSongChoose.Size = new System.Drawing.Size(55, 24);
-            this.btnSongChoose.TabIndex = 20;
-            this.btnSongChoose.Text = "Set";
-            this.btnSongChoose.UseVisualStyleBackColor = false;
-            this.btnSongChoose.Click += new System.EventHandler(this.btnSongSet_Click);
+            this.btnAdd.BackColor = System.Drawing.Color.Goldenrod;
+            this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnAdd.Font = new System.Drawing.Font("UD Digi Kyokasho NK-B", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnAdd.Location = new System.Drawing.Point(136, 400);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(27, 24);
+            this.btnAdd.TabIndex = 20;
+            this.btnAdd.Text = "+";
+            this.btnAdd.UseVisualStyleBackColor = false;
+            this.btnAdd.Click += new System.EventHandler(this.btnSongChoose_Click);
             // 
             // songPlayingLabel
             // 
@@ -297,7 +261,7 @@ namespace Reminder
             this.btnPlaySong.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnPlaySong.Font = new System.Drawing.Font("UD Digi Kyokasho NK-B", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnPlaySong.ForeColor = System.Drawing.Color.Black;
-            this.btnPlaySong.Location = new System.Drawing.Point(7, 231);
+            this.btnPlaySong.Location = new System.Drawing.Point(8, 400);
             this.btnPlaySong.Name = "btnPlaySong";
             this.btnPlaySong.Size = new System.Drawing.Size(55, 24);
             this.btnPlaySong.TabIndex = 22;
@@ -311,7 +275,7 @@ namespace Reminder
             this.btnStopSong.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnStopSong.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnStopSong.Font = new System.Drawing.Font("UD Digi Kyokasho NK-B", 9.75F, System.Drawing.FontStyle.Bold);
-            this.btnStopSong.Location = new System.Drawing.Point(70, 231);
+            this.btnStopSong.Location = new System.Drawing.Point(70, 400);
             this.btnStopSong.Name = "btnStopSong";
             this.btnStopSong.Size = new System.Drawing.Size(55, 24);
             this.btnStopSong.TabIndex = 23;
@@ -347,9 +311,9 @@ namespace Reminder
             this.btnRemind.BackColor = System.Drawing.Color.White;
             this.btnRemind.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnRemind.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.btnRemind.Location = new System.Drawing.Point(197, 231);
+            this.btnRemind.Location = new System.Drawing.Point(197, 168);
             this.btnRemind.Name = "btnRemind";
-            this.btnRemind.Size = new System.Drawing.Size(55, 59);
+            this.btnRemind.Size = new System.Drawing.Size(55, 24);
             this.btnRemind.TabIndex = 26;
             this.btnRemind.Text = "Remind to stand";
             this.btnRemind.UseVisualStyleBackColor = false;
@@ -401,28 +365,56 @@ namespace Reminder
             this.excerciseToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.excerciseToolStripMenuItem.Text = "Excercise";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(8, 382);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(248, 10);
+            this.progressBar1.TabIndex = 28;
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(8, 280);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(247, 69);
+            this.listBox1.TabIndex = 29;
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.BackColor = System.Drawing.Color.Goldenrod;
+            this.btnRemove.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnRemove.Font = new System.Drawing.Font("UD Digi Kyokasho NK-B", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnRemove.Location = new System.Drawing.Point(169, 400);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(27, 24);
+            this.btnRemove.TabIndex = 30;
+            this.btnRemove.Text = "-";
+            this.btnRemove.UseVisualStyleBackColor = false;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(262, 373);
+            this.ClientSize = new System.Drawing.Size(262, 431);
+            this.Controls.Add(this.btnRemove);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnRemind);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.numLoop);
             this.Controls.Add(this.btnStopSong);
             this.Controls.Add(this.btnPlaySong);
             this.Controls.Add(this.songPlayingLabel);
-            this.Controls.Add(this.btnSongChoose);
+            this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.btnSet);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.btnSaveMsg);
-            this.Controls.Add(this.btnExe);
-            this.Controls.Add(this.btnRelax);
-            this.Controls.Add(this.btnStudy);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.numHour);
             this.Controls.Add(this.numMinute);
@@ -460,16 +452,13 @@ namespace Reminder
         private System.Windows.Forms.NumericUpDown numMinute;
         private System.Windows.Forms.NumericUpDown numHour;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button btnStudy;
-        private System.Windows.Forms.Button btnRelax;
-        private System.Windows.Forms.Button btnExe;
         private System.Windows.Forms.Button btnSaveMsg;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnSet;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button btnSongChoose;
+        private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Label songPlaying;
         private System.Windows.Forms.Button btnPlaySong;
         private System.Windows.Forms.Button btnStopSong;
@@ -483,6 +472,9 @@ namespace Reminder
         private System.Windows.Forms.ToolStripMenuItem relaxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem studyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem excerciseToolStripMenuItem;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Button btnRemove;
     }
 }
 
