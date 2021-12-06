@@ -1,4 +1,4 @@
-﻿using NAudio;
+﻿
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -161,7 +161,7 @@ namespace Reminder
 
 
         //Play Song:--------------------------------------------------------------
- 
+    
         IWavePlayer player = new WaveOut();
         static List<Song> songs = new List<Song>();
         static LinkedList<Song> songPath = new LinkedList<Song>();
@@ -217,6 +217,7 @@ namespace Reminder
                     
                     progressBar1.Invoke((MethodInvoker)(() => progressBar1.Step = 1));
                     player.Init(audioFileReader);
+         
                     player.Volume = (float)0.1;
                     songInited = true;
                     play();

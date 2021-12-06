@@ -1,6 +1,5 @@
 D:\My Projects\HealthReminder\Remainder\Reminder\Reminder\Object\bin\Debug\Object.dll
 D:\My Projects\HealthReminder\Remainder\Reminder\Reminder\Object\bin\Debug\Object.pdb
-D:\My Projects\HealthReminder\Remainder\Reminder\Reminder\Object\obj\Debug\Object.csproj.AssemblyReference.cache
 D:\My Projects\HealthReminder\Remainder\Reminder\Reminder\Object\obj\Debug\Object.csproj.CoreCompileInputs.cache
 D:\My Projects\HealthReminder\Remainder\Reminder\Reminder\Object\obj\Debug\Object.dll
 D:\My Projects\HealthReminder\Remainder\Reminder\Reminder\Object\obj\Debug\Object.pdb
