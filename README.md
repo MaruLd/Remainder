@@ -4,7 +4,5 @@
  - A Audio player to listening to music.
  - Add audio files in playlist folder to play
 
-
-![UI](readme-asset/UI.PNG)
-
-![UI2](readme-asset/image.png)
+# Implementation:
+![UI](readme-asset/image.png)
