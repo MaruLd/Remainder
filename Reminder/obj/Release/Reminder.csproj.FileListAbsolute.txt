@@ -3,3 +3,17 @@ D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.MainForm.r
 D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.Properties.Resources.resources
 D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.csproj.GenerateResource.cache
 D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.csproj.CoreCompileInputs.cache
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\Reminder.exe.config
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\Reminder.exe
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\Reminder.pdb
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.Asio.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.Core.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.Midi.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.Wasapi.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.WinForms.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.WinMM.dll
+D:\My Projects\HealthReminder\Remainder\Reminder\bin\Release\NAudio.xml
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.csproj.CopyComplete
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.exe
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.pdb
