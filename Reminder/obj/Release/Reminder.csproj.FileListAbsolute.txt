@@ -1,0 +1,5 @@
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.csproj.AssemblyReference.cache
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.MainForm.resources
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.Properties.Resources.resources
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.csproj.GenerateResource.cache
+D:\My Projects\HealthReminder\Remainder\Reminder\obj\Release\Reminder.csproj.CoreCompileInputs.cache
